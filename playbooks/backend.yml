@@ -45,6 +45,9 @@
       owner: root
       group: root
       mode: 0775
+    
+  - name: Add flask daemon to the startup configs
+    shell: update-rc.d flask defaults
 
   - name: Start flask app
     service:
