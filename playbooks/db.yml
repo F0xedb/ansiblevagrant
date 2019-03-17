@@ -1,0 +1,25 @@
+---
+# backend
+- hosts: db
+  sudo: yes  
+
+  tasks:
+
+  - name: install mysql
+    apt: pkg={{ item }} state=latest
+    with_items:
+      - mysql-server
+
+  - name: Copy backend scripts to the flask server
+    copy:
+      src: /home/vagrant/cfg/backend_conf
+      dest: /etc/mysql/my.cnf
+      owner: root
+      group: root
+      mode: 3506
+
+
+  - name: Start mysql
+    service:
+      name: mysql
+      state: started

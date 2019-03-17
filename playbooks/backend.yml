@@ -1,0 +1,52 @@
+---
+# backend
+- hosts: backend
+  sudo: yes  
+
+  tasks:
+
+  - apt_repository:
+      repo: ppa:jonathonf/python-2.7
+
+  - name: Update local repo cache
+    command: apt update
+
+  - name: install Flask via pip
+    apt: pkg={{ item }} state=latest
+    with_items:
+      - python2.7
+      - build-essential 
+      - python-virtualenv
+      - python-mysqldb
+
+  - name: Downloading pip
+    command: curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  
+  - name: Installing pip
+    command: python get-pip.py
+
+  - pip:
+      name: 
+        - Flask
+        - flask-cors
+
+  - name: Copy backend scripts to the flask server
+    copy:
+      src: /home/vagrant/backend/backend.py
+      dest: /home/vagrant/backend.py
+      owner: vagrant
+      group: vagrant
+      mode: 0770
+
+  - name: Copy init.d script
+    copy:
+      src: /home/vagrant/backend/flask
+      dest: /etc/init.d/flask
+      owner: root
+      group: root
+      mode: 0775
+
+  - name: Start flask app
+    service:
+      name: flask
+      state: started

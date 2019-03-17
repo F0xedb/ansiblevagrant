@@ -1,0 +1,31 @@
+<html>
+<title>Dev Ops Load Balancer</title>
+<style>.block {text-align: center;margin-bottom:10px;}.block:before {content: '';display: inline-block;height: 100%;vertical-align: middle;margin-right: -0.25em;}.centered {display: inline-block;vertical-align: middle;width: 300px;}</style>
+
+<body>
+<div class="block" style="height: 99%;">
+    <div class="centered">
+        <h1></h1>
+        <p>Served by {{ ansible_hostname }} ({{ ansible_eth1.ipv4.address }}).</p>
+    </div>
+</div>
+<script>
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
+let ip = "{{ ansible_eth1.ipv4.address }}"
+let arr = ip.split('.')
+arr[3] = (parseInt(arr[3])+10).toString()
+let backendIP = arr.join('.')
+let backend = 'http://' + backendIP + ':' + 5000;
+httpGetAsync(backend, x => {console.log(x); document.querySelector("h1").innerHTML=x})
+</script>
+</body>
+</html>
