@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
         end
         mgmt_config.vm.provision :shell, path: "ansible-install.sh"
     end
-  
+
     # create load balancer
     config.vm.define :lb do |lb_config|
         lb_config.vm.box = "ubuntu/trusty64"
@@ -26,7 +26,6 @@ Vagrant.configure("2") do |config|
     end
   
     # create some web servers
-    # https://docs.vagrantup.com/v2/vagrantfile/tips.html
     (1..4).each do |i|
       config.vm.define "web#{i}" do |node|
           node.vm.box = "ubuntu/trusty64"
@@ -40,6 +39,7 @@ Vagrant.configure("2") do |config|
       end
     end
 
+    #create the flask backends
     (1..4).each do |i|
       config.vm.define "backend#{i}" do |node|
           node.vm.box = "ubuntu/trusty64"
